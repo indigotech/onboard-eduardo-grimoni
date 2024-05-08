@@ -4,7 +4,7 @@
 A project to introduce the main tools to app developers.
 
 ## Environment and tools
-node@v16.13.1
+node@v20.13.0
 npm@8.1.2
 babel/core@7.24.5
 babel/preset-env@7.24.5
