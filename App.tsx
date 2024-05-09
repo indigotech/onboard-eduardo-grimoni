@@ -1,15 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import LoginScreen from '/Users/taqtile/onboard-eduardo-grimoni/components/login-screen.tsx'
 
-const HelloWorld = () => {
+const App = () => {
   return (
-    <View style={Styles.container}>
-      <Text>Hello, world!</Text>
+    <View style={styles.container}>
+      <LoginScreen />
     </View>
   );
 };
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -17,4 +18,4 @@ const Styles = StyleSheet.create({
   },
 });
 
-export default HelloWorld;
+export default App;
