@@ -27,6 +27,7 @@ typescript-eslint@7.8.0 extraneous
 typescript@5.0.4
 
 ## Steps to run ad debug
+Install Dependencies: npm install
 Start Metro: npx react-native start
 Run ios: npx react-native run-ios
 Run android: npx react-native run-android
