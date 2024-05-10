@@ -8,28 +8,28 @@ const LoginScreen = () => {
   const [passwordError, setPasswordError] = useState('');
 
   const handleLogin = () => {
-    setEmailError(email.trim() ? '' : 'Insira seu e-mail.');
-    setPasswordError(password.trim() ? '' : 'Insira sua senha.');
+    const emailTrimmed = email.trim();
+    const passwordTrimmed = password.trim();
 
-    if (email.trim() && password.trim()) {
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
+    setEmailError(emailTrimmed ? '' : 'Insira seu e-mail.');
+    setPasswordError(passwordTrimmed ? '' : 'Insira sua senha.');
+
+    if (emailTrimmed && passwordTrimmed) {
+      if (!/^\S+@\S+\.\S+$/.test(emailTrimmed)) {
         setEmailError('Formato do e-mail inválido.');
         return;
       }
 
       if (
         password.length < 7 ||
-        !/\d/.test(password) ||
-        !/[a-zA-Z]/.test(password)
+        !/\d/.test(passwordTrimmed) ||
+        !/[a-zA-Z]/.test(passwordTrimmed)
       ) {
         setPasswordError(
           'A senha precisa conter ao menos 7 caracteres, uma letra e um número.',
         );
         return;
       }
-
-      console.log('E-mail:', email);
-      console.log('Senha:', password);
     }
   };
 
