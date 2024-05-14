@@ -1,41 +1,89 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  useMutation,
+  gql,
+} from '@apollo/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: 'https://template-onboarding-node-sjz6wnaoia-uc.a.run.app/graphql',
+  }),
+  cache: new InMemoryCache(),
+});
+
+const LOGIN_MUTATION = gql`
+  mutation Mutation($data: LoginInput!) {
+    login(data: $data) {
+      token
+    }
+  }
+`;
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [login, {loading}] = useMutation(LOGIN_MUTATION, {
+    client: client,
+  });
 
-  const handleLogin = () => {
-    const emailTrimmed = email.trim();
-    const passwordTrimmed = password.trim();
+  const handleLogin = async () => {
+    const trimmedEmail = email.trim();
 
-    setEmailError(emailTrimmed ? '' : 'Insira seu e-mail.');
-    setPasswordError(passwordTrimmed ? '' : 'Insira sua senha.');
+    setEmailError(trimmedEmail ? '' : 'Insira seu e-mail.');
+    setPasswordError(password ? '' : 'Insira sua senha.');
 
-    if (emailTrimmed && passwordTrimmed) {
-      if (!/^\S+@\S+\.\S+$/.test(emailTrimmed)) {
+    if (trimmedEmail && password) {
+      if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
         setEmailError('Formato do e-mail inválido.');
         return;
       }
 
       if (
         password.length < 7 ||
-        !/\d/.test(passwordTrimmed) ||
-        !/[a-zA-Z]/.test(passwordTrimmed)
+        !/\d/.test(password) ||
+        !/[a-zA-Z]/.test(password)
       ) {
         setPasswordError(
           'A senha precisa conter ao menos 7 caracteres, uma letra e um número.',
         );
         return;
       }
+
+      try {
+        const {data, errors} = await login({
+          variables: {
+            data: {
+              email: trimmedEmail,
+              password: password,
+            },
+          },
+        });
+
+        if (errors && errors.length > 0) {
+          const errorMessage =
+            errors[0].message || 'Ocorreu um erro durante o login.';
+          Alert.alert('Error', errorMessage);
+        } else {
+          await AsyncStorage.setItem('token', data.login.token);
+          Alert.alert('Sucesso', 'Login realizado com sucesso!');
+        }
+      } catch (error) {
+        console.warn('Login error:', error);
+        Alert.alert('Error', 'Ocorreu um erro durante o login.');
+      }
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bom-vindo(a) à Taqtile!</Text>
+      <Text style={styles.title}>Bem-vindo(a) à Taqtile!</Text>
       <TextInput
         style={[styles.input, emailError ? styles.inputError : null]}
         placeholder="E-mail"
@@ -50,10 +98,10 @@ const LoginScreen = () => {
         placeholder="Senha"
         secureTextEntry
         value={password}
-        onChangeText={setPassword}
+        onChangeText={text => setPassword(text)}
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      <Button title="Entrar" onPress={handleLogin} />
+      <Button title="Entrar" onPress={handleLogin} disabled={loading} />
     </View>
   );
 };
