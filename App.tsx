@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import LoginScreen from '/Users/taqtile/onboard-eduardo-grimoni/components/login-screen.tsx'
+import LoginScreen from './components/login-screen.tsx';
 
 const App = () => {
   return (
