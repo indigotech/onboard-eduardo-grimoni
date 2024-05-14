@@ -6,7 +6,6 @@ import {
   HttpLink,
   useMutation,
   gql,
-  ApolloProvider,
 } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,19 +34,21 @@ const LoginScreen = () => {
   });
 
   const handleLogin = async () => {
-    setEmailError(email.trim() ? '' : 'Insira seu e-mail.');
-    setPasswordError(password.trim() ? '' : 'Insira sua senha.');
+    const trimmedEmail = email.trim();
 
-    if (email.trim() && password.trim()) {
-      if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+    setEmailError(trimmedEmail ? '' : 'Insira seu e-mail.');
+    setPasswordError(password ? '' : 'Insira sua senha.');
+
+    if (trimmedEmail && password) {
+      if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
         setEmailError('Formato do e-mail inválido.');
         return;
       }
 
       if (
         password.length < 7 ||
-        !/\d/.test(password.trim()) ||
-        !/[a-zA-Z]/.test(password.trim())
+        !/\d/.test(password) ||
+        !/[a-zA-Z]/.test(password)
       ) {
         setPasswordError(
           'A senha precisa conter ao menos 7 caracteres, uma letra e um número.',
@@ -59,8 +60,8 @@ const LoginScreen = () => {
         const {data, errors} = await login({
           variables: {
             data: {
-              email: email.trim(),
-              password: password.trim(),
+              email: trimmedEmail,
+              password: password,
             },
           },
         });
@@ -69,45 +70,39 @@ const LoginScreen = () => {
           const errorMessage =
             errors[0].message || 'Ocorreu um erro durante o login.';
           Alert.alert('Error', errorMessage);
-        } else if (data.login.error) {
-          Alert.alert('Error', data.login.error);
         } else {
           await AsyncStorage.setItem('token', data.login.token);
-          Alert.alert('Successo', 'Login realizado com sucesso!');
+          Alert.alert('Sucesso', 'Login realizado com sucesso!');
         }
       } catch (error) {
-        console.error('Login error:', error);
+        console.warn('Login error:', error);
         Alert.alert('Error', 'Ocorreu um erro durante o login.');
       }
     }
   };
 
   return (
-    <ApolloProvider client={client}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Bem-vindo(a) à Taqtile!</Text>
-        <TextInput
-          style={[styles.input, emailError ? styles.inputError : null]}
-          placeholder="E-mail"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
-        {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
-        <TextInput
-          style={[styles.input, passwordError ? styles.inputError : null]}
-          placeholder="Senha"
-          secureTextEntry
-          value={password}
-          onChangeText={text => setPassword(text)}
-        />
-        {passwordError ? (
-          <Text style={styles.error}>{passwordError}</Text>
-        ) : null}
-        <Button title="Entrar" onPress={handleLogin} disabled={loading} />
-      </View>
-    </ApolloProvider>
+    <View style={styles.container}>
+      <Text style={styles.title}>Bem-vindo(a) à Taqtile!</Text>
+      <TextInput
+        style={[styles.input, emailError ? styles.inputError : null]}
+        placeholder="E-mail"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={text => setEmail(text)}
+      />
+      {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
+      <TextInput
+        style={[styles.input, passwordError ? styles.inputError : null]}
+        placeholder="Senha"
+        secureTextEntry
+        value={password}
+        onChangeText={text => setPassword(text)}
+      />
+      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+      <Button title="Entrar" onPress={handleLogin} disabled={loading} />
+    </View>
   );
 };
 
