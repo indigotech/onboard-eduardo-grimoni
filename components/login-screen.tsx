@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, TextInput, Button, Alert} from 'react-native';
 import {useMutation, gql} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Navigation} from 'react-native-navigation';
 import styles from './styles';
 import client from './client';
 
@@ -13,7 +14,7 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
-const LoginScreen = () => {
+const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -21,6 +22,14 @@ const LoginScreen = () => {
   const [login, {loading}] = useMutation(LOGIN_MUTATION, {
     client: client,
   });
+
+  const navigateToHome = () => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'Home',
+      },
+    });
+  };
 
   const handleLogin = async () => {
     const trimmedEmail = email.trim();
@@ -62,6 +71,7 @@ const LoginScreen = () => {
         } else {
           await AsyncStorage.setItem('token', data.login.token);
           Alert.alert('Sucesso', 'Login realizado com sucesso!');
+          navigateToHome();
         }
       } catch (error) {
         console.warn('Login error:', error);

@@ -1,17 +1,14 @@
 #import "AppDelegate.h"
-
+#import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.moduleName = @"PrimeiroProjetoTaqtile";
-  // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
+  [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
 
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  return YES;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
@@ -26,6 +23,10 @@
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge {
+  return [ReactNativeNavigation extraModulesForBridge:bridge];
 }
 
 @end
