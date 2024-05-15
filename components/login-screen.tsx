@@ -1,20 +1,9 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  useMutation,
-  gql,
-} from '@apollo/client';
+import {View, Text, TextInput, Button, Alert} from 'react-native';
+import {useMutation, gql} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const client = new ApolloClient({
-  link: new HttpLink({
-    uri: 'https://template-onboarding-node-sjz6wnaoia-uc.a.run.app/graphql',
-  }),
-  cache: new InMemoryCache(),
-});
+import styles from './styles';
+import client from './client';
 
 const LOGIN_MUTATION = gql`
   mutation Mutation($data: LoginInput!) {
@@ -105,35 +94,5 @@ const LoginScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  inputError: {
-    borderColor: 'red',
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
-});
 
 export default LoginScreen;
