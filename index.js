@@ -1,9 +1,22 @@
-/**
- * @format
- */
+import {Navigation} from 'react-native-navigation';
+import LoginScreen from './components/login-screen.tsx';
+import HomeScreen from './components/home-screen.tsx';
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
+Navigation.registerComponent('Login', () => LoginScreen);
+Navigation.registerComponent('Home', () => HomeScreen);
 
-AppRegistry.registerComponent(appName, () => App);
+Navigation.events().registerAppLaunchedListener(async () => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'Login',
+            },
+          },
+        ],
+      },
+    },
+  });
+});
