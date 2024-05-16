@@ -31,10 +31,10 @@ const LoginScreen = (props: {componentId: string}) => {
     client: client,
   });
 
-  const navigateToHome = () => {
+  const navigateToUser = () => {
     Navigation.push(props.componentId, {
       component: {
-        name: 'Home',
+        name: 'User',
       },
     });
   };
@@ -81,7 +81,7 @@ const LoginScreen = (props: {componentId: string}) => {
         } else {
           await AsyncStorage.setItem('token', data.login.token);
           Alert.alert('Sucesso', 'Login realizado com sucesso!');
-          navigateToHome();
+          navigateToUser();
         }
       } catch (error) {
         console.warn('Login error:', error);
