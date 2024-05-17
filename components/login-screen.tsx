@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TextInput, Button, Alert} from 'react-native';
 import {useMutation, gql} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
@@ -26,15 +19,14 @@ const LoginScreen = (props: {componentId: string}) => {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [login] = useMutation(LOGIN_MUTATION, {
+  const [login, {loading}] = useMutation(LOGIN_MUTATION, {
     client: client,
   });
 
-  const navigateToUser = () => {
+  const navigateToHome = () => {
     Navigation.push(props.componentId, {
       component: {
-        name: 'User',
+        name: 'Home',
       },
     });
   };
@@ -63,8 +55,6 @@ const LoginScreen = (props: {componentId: string}) => {
       }
 
       try {
-        setLoading(true);
-
         const {data, errors} = await login({
           variables: {
             data: {
@@ -81,13 +71,11 @@ const LoginScreen = (props: {componentId: string}) => {
         } else {
           await AsyncStorage.setItem('token', data.login.token);
           Alert.alert('Sucesso', 'Login realizado com sucesso!');
-          navigateToUser();
+          navigateToHome();
         }
       } catch (error) {
         console.warn('Login error:', error);
         Alert.alert('Error', 'Ocorreu um erro durante o login.');
-      } finally {
-        setLoading(false);
       }
     }
   };
@@ -112,7 +100,6 @@ const LoginScreen = (props: {componentId: string}) => {
         onChangeText={text => setPassword(text)}
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      {loading ? <ActivityIndicator size="small" color="#0000ff" /> : null}
       <Button title="Entrar" onPress={handleLogin} disabled={loading} />
     </View>
   );
