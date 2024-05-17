@@ -10,8 +10,8 @@ import {
 import {useMutation, gql} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import styles from './styles';
-import client from './client';
+import {styles} from './styles';
+import {client} from './client';
 
 const LOGIN_MUTATION = gql`
   mutation Mutation($data: LoginInput!) {
@@ -21,7 +21,7 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
-const LoginScreen = (props: {componentId: string}) => {
+export const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -112,5 +112,3 @@ const LoginScreen = (props: {componentId: string}) => {
     </View>
   );
 };
-
-export default LoginScreen;
