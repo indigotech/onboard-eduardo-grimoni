@@ -26,8 +26,7 @@ const LoginScreen = (props: {componentId: string}) => {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [login] = useMutation(LOGIN_MUTATION, {
+  const [login, {loading}] = useMutation(LOGIN_MUTATION, {
     client: client,
   });
 
@@ -63,8 +62,6 @@ const LoginScreen = (props: {componentId: string}) => {
       }
 
       try {
-        setLoading(true);
-
         const {data, errors} = await login({
           variables: {
             data: {
@@ -86,8 +83,6 @@ const LoginScreen = (props: {componentId: string}) => {
       } catch (error) {
         console.warn('Login error:', error);
         Alert.alert('Error', 'Ocorreu um erro durante o login.');
-      } finally {
-        setLoading(false);
       }
     }
   };
