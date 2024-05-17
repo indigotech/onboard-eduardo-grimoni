@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import {useMutation, gql} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
@@ -23,10 +30,10 @@ const LoginScreen = (props: {componentId: string}) => {
     client: client,
   });
 
-  const navigateToHome = () => {
+  const navigateToUser = () => {
     Navigation.push(props.componentId, {
       component: {
-        name: 'Home',
+        name: 'User',
       },
     });
   };
@@ -71,7 +78,7 @@ const LoginScreen = (props: {componentId: string}) => {
         } else {
           await AsyncStorage.setItem('token', data.login.token);
           Alert.alert('Sucesso', 'Login realizado com sucesso!');
-          navigateToHome();
+          navigateToUser();
         }
       } catch (error) {
         console.warn('Login error:', error);
@@ -100,6 +107,7 @@ const LoginScreen = (props: {componentId: string}) => {
         onChangeText={text => setPassword(text)}
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+      {loading ? <ActivityIndicator size="small" color="#0000ff" /> : null}
       <Button title="Entrar" onPress={handleLogin} disabled={loading} />
     </View>
   );

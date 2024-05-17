@@ -1,9 +1,9 @@
 import {Navigation} from 'react-native-navigation';
 import LoginScreen from './components/login-screen.tsx';
-import HomeScreen from './components/home-screen.tsx';
+import UserList from './components/user-list.tsx';
 
 Navigation.registerComponent('Login', () => LoginScreen);
-Navigation.registerComponent('Home', () => HomeScreen);
+Navigation.registerComponent('User', () => UserList);
 
 Navigation.events().registerAppLaunchedListener(async () => {
   Navigation.setRoot({
