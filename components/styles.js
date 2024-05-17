@@ -28,6 +28,17 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
   },
+  userContainer: {
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  userEmail: {
+    fontSize: 16,
+    color: 'gray',
+  },
 });
 
 export default styles;
