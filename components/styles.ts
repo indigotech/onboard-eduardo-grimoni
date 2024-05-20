@@ -39,4 +39,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: 'gray',
   },
+  loadingIndicator: {
+    marginTop: 20,
+    color: '#0000ff',
+  },
 });
