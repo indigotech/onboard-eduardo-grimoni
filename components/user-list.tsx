@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, FlatList, ActivityIndicator} from 'react-native';
 import {useQuery} from '@apollo/client';
 import {styles} from './styles';
 import {GET_USERS} from './queries';
-import {client} from './client';
 
 interface User {
   id: number;
@@ -12,13 +11,47 @@ interface User {
 }
 
 const Userlist = () => {
-  const {
-    loading,
-    error: graphqlError,
-    data,
-  } = useQuery(GET_USERS, {
-    client,
+  const [offset, setOffset] = useState(0);
+  const {loading, error, data, fetchMore} = useQuery(GET_USERS, {
+    variables: {
+      data: {
+        offset: 0,
+        limit: 11,
+      },
+    },
   });
+
+  useEffect(() => {
+    if (!loading && data && data.users.pageInfo.hasNextPage) {
+      const newOffset = data.users.nodes.length;
+      setOffset(newOffset);
+    }
+  }, [loading, data]);
+
+  const loadMoreData = () => {
+    if (!loading && data && data.users.pageInfo.hasNextPage) {
+      fetchMore({
+        variables: {
+          data: {
+            offset: offset,
+            limit: 11,
+          },
+        },
+        updateQuery: (prev, {fetchMoreResult}) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return {
+            ...prev,
+            users: {
+              ...prev.users,
+              nodes: [...prev.users.nodes, ...fetchMoreResult.users.nodes],
+            },
+          };
+        },
+      });
+    }
+  };
 
   const renderItem = ({item}: {item: User}) => (
     <View style={styles.userContainer}>
@@ -30,15 +63,17 @@ const Userlist = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Usuários</Text>
-      {loading ? (
+      {loading && offset === 0 ? (
         <ActivityIndicator style={styles.loadingIndicator} />
-      ) : graphqlError ? (
-        <Text style={styles.error}>Error: {graphqlError.message}</Text>
+      ) : error ? (
+        <Text style={styles.error}>Error: {error.message}</Text>
       ) : (
         <FlatList
           data={data?.users.nodes}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
+          onEndReachedThreshold={0.5}
+          onEndReached={loadMoreData}
         />
       )}
     </View>

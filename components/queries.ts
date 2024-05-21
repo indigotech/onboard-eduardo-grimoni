@@ -9,12 +9,19 @@ export const LOGIN_MUTATION = gql`
 `;
 
 export const GET_USERS = gql`
-  query Query {
-    users {
+  query Query($data: PageInput) {
+    users(data: $data) {
       nodes {
         id
         name
         email
+      }
+      count
+      pageInfo {
+        offset
+        limit
+        hasNextPage
+        hasPreviousPage
       }
     }
   }
