@@ -11,7 +11,7 @@ interface User {
   email: string;
 }
 
-const Userlist = (props: {componentId: string}) => {
+const Userlist = () => {
   const {
     loading,
     error: graphqlError,
@@ -19,7 +19,6 @@ const Userlist = (props: {componentId: string}) => {
   } = useQuery(GET_USERS, {
     client,
   });
-  console.log(props.componentId);
 
   const renderItem = ({item}: {item: User}) => (
     <View style={styles.userContainer}>
