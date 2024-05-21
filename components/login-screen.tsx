@@ -7,21 +7,14 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import {useMutation, gql} from '@apollo/client';
+import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import styles from './styles';
-import client from './client';
+import {styles} from './styles';
+import {client} from './client';
+import {LOGIN_MUTATION} from './queries';
 
-const LOGIN_MUTATION = gql`
-  mutation Mutation($data: LoginInput!) {
-    login(data: $data) {
-      token
-    }
-  }
-`;
-
-const LoginScreen = (props: {componentId: string}) => {
+export const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -107,10 +100,8 @@ const LoginScreen = (props: {componentId: string}) => {
         onChangeText={text => setPassword(text)}
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      {loading ? <ActivityIndicator size="small" color="#0000ff" /> : null}
+      {loading ? <ActivityIndicator style={styles.loadingIndicator} /> : null}
       <Button title="Entrar" onPress={handleLogin} disabled={loading} />
     </View>
   );
 };
-
-export default LoginScreen;
