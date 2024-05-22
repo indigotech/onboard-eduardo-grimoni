@@ -1,8 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import {useQuery} from '@apollo/client';
 import {styles} from './styles';
 import {GET_USERS} from './queries';
+import {Navigation} from 'react-native-navigation';
 
 interface User {
   id: number;
@@ -10,7 +17,7 @@ interface User {
   email: string;
 }
 
-export const UserList = () => {
+export const UserList = (props: {componentId: string}) => {
   const [offset, setOffset] = useState(0);
   const {loading, error, data, fetchMore} = useQuery(GET_USERS, {
     variables: {
@@ -20,6 +27,14 @@ export const UserList = () => {
       },
     },
   });
+
+  const navigateToCreateUser = () => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'Create',
+      },
+    });
+  };
 
   useEffect(() => {
     if (!loading && data && data.users.pageInfo.hasNextPage) {
@@ -76,6 +91,13 @@ export const UserList = () => {
           onEndReached={loadMoreData}
         />
       )}
+      <View style={styles.bottomRightContainer}>
+        <TouchableOpacity
+          style={styles.roundButton}
+          onPress={navigateToCreateUser}>
+          <Text style={styles.plusSign}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

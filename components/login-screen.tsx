@@ -6,7 +6,6 @@ import {
   Button,
   Alert,
   ActivityIndicator,
-  TouchableOpacity,
 } from 'react-native';
 import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -29,14 +28,6 @@ export const LoginScreen = (props: {componentId: string}) => {
     Navigation.push(props.componentId, {
       component: {
         name: 'User',
-      },
-    });
-  };
-
-  const navigateToCreateUser = () => {
-    Navigation.push(props.componentId, {
-      component: {
-        name: 'Create',
       },
     });
   };
@@ -113,14 +104,6 @@ export const LoginScreen = (props: {componentId: string}) => {
         onPress={handleLogin}
         disabled={loading}
       />
-
-      <View style={styles.bottomRightContainer}>
-        <TouchableOpacity
-          style={styles.roundButton}
-          onPress={navigateToCreateUser}>
-          <Text style={styles.plusSign}>+</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

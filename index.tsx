@@ -11,20 +11,17 @@ Navigation.registerComponent('Login', () => props => (
     <LoginScreen componentId={props.componentId} />
   </ApolloProvider>
 ));
-
-const UserListWithApollo = () => (
+Navigation.registerComponent('User', () => props => (
   <ApolloProvider client={client}>
-    <UserList />
+    <UserList componentId={props.componentId} />
   </ApolloProvider>
-);
-
+));
 const CreateUserWithApollo = () => (
   <ApolloProvider client={client}>
     <CreateUser />
   </ApolloProvider>
 );
 
-Navigation.registerComponent('User', () => UserListWithApollo);
 Navigation.registerComponent('Create', () => CreateUserWithApollo);
 
 Navigation.events().registerAppLaunchedListener(async () => {
