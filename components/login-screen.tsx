@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +14,7 @@ import {Navigation} from 'react-native-navigation';
 import {styles} from './styles';
 import {client} from './client';
 import {LOGIN_MUTATION} from './queries';
+import {validateEmail, validatePassword} from './validations';
 
 export const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
@@ -31,6 +33,14 @@ export const LoginScreen = (props: {componentId: string}) => {
     });
   };
 
+  const navigateToCreateUser = () => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'Create',
+      },
+    });
+  };
+
   const handleLogin = async () => {
     const trimmedEmail = email.trim();
 
@@ -38,16 +48,12 @@ export const LoginScreen = (props: {componentId: string}) => {
     setPasswordError(password ? '' : 'Insira sua senha.');
 
     if (trimmedEmail && password) {
-      if (!/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
+      if (!validateEmail(trimmedEmail)) {
         setEmailError('Formato do e-mail inválido.');
         return;
       }
 
-      if (
-        password.length < 7 ||
-        !/\d/.test(password) ||
-        !/[a-zA-Z]/.test(password)
-      ) {
+      if (!validatePassword(password)) {
         setPasswordError(
           'A senha precisa conter ao menos 7 caracteres, uma letra e um número.',
         );
@@ -101,7 +107,20 @@ export const LoginScreen = (props: {componentId: string}) => {
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
       {loading ? <ActivityIndicator style={styles.loadingIndicator} /> : null}
-      <Button title="Entrar" onPress={handleLogin} disabled={loading} />
+      <Button
+        title="Entrar"
+        color={'#40e0d0'}
+        onPress={handleLogin}
+        disabled={loading}
+      />
+
+      <View style={styles.bottomRightContainer}>
+        <TouchableOpacity
+          style={styles.roundButton}
+          onPress={navigateToCreateUser}>
+          <Text style={styles.plusSign}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

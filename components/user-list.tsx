@@ -10,7 +10,7 @@ interface User {
   email: string;
 }
 
-const Userlist = () => {
+export const UserList = () => {
   const [offset, setOffset] = useState(0);
   const {loading, error, data, fetchMore} = useQuery(GET_USERS, {
     variables: {
@@ -79,5 +79,3 @@ const Userlist = () => {
     </View>
   );
 };
-
-export default Userlist;
