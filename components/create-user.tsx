@@ -110,7 +110,7 @@ export const CreateUser = () => {
       {phoneError ? <Text style={styles.error}>{phoneError}</Text> : null}
       <TextInput
         style={[styles.input, birthDateError ? styles.inputError : null]}
-        placeholder="Data de Nascimento (AAAA-MM-DD)"
+        placeholder="Data de Nascimento (DD/MM/AAAA)"
         value={birthDate}
         onChangeText={text => setBirthDate(text)}
       />
