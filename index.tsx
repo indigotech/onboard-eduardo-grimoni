@@ -16,13 +16,11 @@ Navigation.registerComponent('User', () => props => (
     <UserList componentId={props.componentId} />
   </ApolloProvider>
 ));
-const CreateUserWithApollo = () => (
+Navigation.registerComponent('Create', () => props => (
   <ApolloProvider client={client}>
-    <CreateUser />
+    <CreateUser componentId={props.componentId} />
   </ApolloProvider>
-);
-
-Navigation.registerComponent('Create', () => CreateUserWithApollo);
+));
 
 Navigation.events().registerAppLaunchedListener(async () => {
   Navigation.setRoot({
