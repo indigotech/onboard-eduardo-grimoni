@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import {styles} from './styles';
 import {
   validateEmail,
@@ -8,8 +15,12 @@ import {
   validatePhone,
   validateBirthdate,
 } from './validations';
+import {CREATE_USER_MUTATION} from './queries';
+import {client} from './client';
+import {useMutation} from '@apollo/client';
+import {Navigation} from 'react-native-navigation';
 
-export const CreateUser = () => {
+export const CreateUser = (props: {componentId: string}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,59 +31,76 @@ export const CreateUser = () => {
   const [passwordError, setPasswordError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [birthDateError, setBirthDateError] = useState('');
+  const [createUser, {loading: mutationLoading}] = useMutation(
+    CREATE_USER_MUTATION,
+    {client: client},
+  );
+  const navigateToUser = () => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'User',
+      },
+    });
+  };
 
   const handleAddUser = async () => {
     const trimmedEmail = email.trim();
     const trimmedName = name.trim();
     const trimmedPhone = phone.trim();
-    const trimmedBirthDate = birthDate.trim();
+    const parts = birthDate.split('/');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    const newBirthDate = new Date(formattedDate);
 
-    setNameError(trimmedName ? '' : 'Digite o seu nome.');
-    if (!nameError && !validateName(name)) {
-      setNameError('Digite um nome válido.');
-      return;
-    }
-    setEmailError(trimmedEmail ? '' : 'Digite o seu e-mail.');
-    if (!emailError && !validateEmail(email)) {
-      setEmailError('Digite um e-mail válido.');
-      return;
-    }
-    setPasswordError(password ? '' : 'Digite a sua senha.');
-    if (!passwordError && !validatePassword(password)) {
-      setPasswordError(
-        'A senha deve ter pelo menos 7 caracteres e conter pelo menos uma letra e um número.',
-      );
-      return;
-    }
-    setPhoneError(trimmedPhone ? '' : 'Digite o seu número de telefone.');
-    if (!phoneError && !validatePhone(phone)) {
-      setPhoneError('Digite um número de telefone válido.');
-      return;
-    }
-    setBirthDateError(
-      trimmedBirthDate ? '' : 'Digite a sua data de nascimento.',
+    setNameError(!validateName(trimmedName) ? 'Digite um nome válido.' : '');
+    setEmailError(
+      !validateEmail(trimmedEmail) ? 'Digite um e-mail válido.' : '',
     );
-    if (!birthDateError && !validateBirthdate(birthDate)) {
-      setBirthDateError('Digite uma data de nascimento válida.');
+    setPasswordError(
+      !validatePassword(password)
+        ? 'A senha deve ter pelo menos 7 caracteres e conter pelo menos uma letra e um número.'
+        : '',
+    );
+    setPhoneError(
+      !validatePhone(trimmedPhone)
+        ? 'Digite um número de telefone válido.'
+        : '',
+    );
+    setBirthDateError(
+      !validateBirthdate(newBirthDate)
+        ? 'Digite uma data de nascimento válida.'
+        : '',
+    );
+
+    if (
+      nameError ||
+      emailError ||
+      passwordError ||
+      phoneError ||
+      birthDateError
+    ) {
       return;
     }
+    try {
+      await createUser({
+        variables: {
+          data: {
+            role: 'user',
+            phone: trimmedPhone,
+            password: password,
+            name: trimmedName,
+            email: trimmedEmail,
+            birthDate: newBirthDate,
+          },
+        },
+      });
 
-    console.log({
-      name: trimmedName,
-      email: trimmedEmail,
-      password,
-      phone: trimmedPhone,
-      birthDate: trimmedBirthDate,
-    });
-
-    setNameError('');
-    setEmailError('');
-    setPasswordError('');
-    setPhoneError('');
-    setBirthDateError('');
-
-    Alert.alert('Sucesso', 'Usuário criado com sucesso.');
+      Alert.alert('Sucesso', 'Usuário criado com sucesso.');
+      navigateToUser();
+    } catch (error) {
+      Alert.alert('Erro', 'Ocorreu um erro ao criar o usuário.');
+    }
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Criar Usuário</Text>
@@ -117,7 +145,12 @@ export const CreateUser = () => {
       {birthDateError ? (
         <Text style={styles.error}>{birthDateError}</Text>
       ) : null}
-      <Button title="Criar Usuário" onPress={handleAddUser} />
+      <Button
+        title="Criar Usuário"
+        onPress={handleAddUser}
+        disabled={mutationLoading}
+      />
+      {mutationLoading && <ActivityIndicator style={styles.loadingIndicator} />}
     </View>
   );
 };

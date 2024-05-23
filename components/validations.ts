@@ -13,10 +13,8 @@ export function validateName(name: string) {
 export function validatePhone(phone: string) {
   return /^\d{11}$/.test(phone);
 }
-export function validateBirthdate(birthdate: string) {
+export function validateBirthdate(newBirthdate: Date) {
   const currentDate = new Date();
-  const parts = birthdate.split('/');
-  const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  const selectedDate = new Date(formattedDate);
-  return selectedDate <= currentDate && !isNaN(selectedDate.getTime());
+  const isValid = newBirthdate <= currentDate && !isNaN(newBirthdate.getTime());
+  return isValid;
 }
