@@ -140,7 +140,7 @@ export const CreateUser = (props: {componentId: string}) => {
       {birthDateError ? (
         <styles.ErrorCaption>{birthDateError}</styles.ErrorCaption>
       ) : null}
-      <styles.Button onPress={handleAddUser}>
+      <styles.Button onPress={handleAddUser} disabled={mutationLoading}>
         <styles.ButtonText>Criar Usuário</styles.ButtonText>
       </styles.Button>
       {mutationLoading && <styles.LoadingIndicator />}
