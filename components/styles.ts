@@ -43,4 +43,23 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     color: '#0000ff',
   },
+  bottomRightContainer: {
+    position: 'absolute',
+    bottom: 40,
+    right: 40,
+  },
+  roundButton: {
+    marginTop: 20,
+    backgroundColor: '#40e0d0',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  plusSign: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
 });
