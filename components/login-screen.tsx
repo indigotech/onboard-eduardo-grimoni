@@ -1,16 +1,9 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {Alert} from 'react-native';
 import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import {styles} from './styles';
+import * as styles from './styles';
 import {client} from './client';
 import {LOGIN_MUTATION} from './queries';
 import {validateEmail, validatePassword} from './validations';
@@ -67,7 +60,6 @@ export const LoginScreen = (props: {componentId: string}) => {
           Alert.alert('Error', errorMessage);
         } else {
           await AsyncStorage.setItem('token', data.login.token);
-          Alert.alert('Sucesso', 'Login realizado com sucesso!');
           navigateToUser();
         }
       } catch (error) {
@@ -78,32 +70,31 @@ export const LoginScreen = (props: {componentId: string}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo(a) à Taqtile!</Text>
-      <TextInput
-        style={[styles.input, emailError ? styles.inputError : null]}
+    <styles.Container>
+      <styles.H1>Bem-vindo(a) à Taqtile!</styles.H1>
+      <styles.TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={text => setEmail(text)}
       />
-      {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
-      <TextInput
-        style={[styles.input, passwordError ? styles.inputError : null]}
+      {emailError ? (
+        <styles.ErrorCaption>{emailError}</styles.ErrorCaption>
+      ) : null}
+      <styles.TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
       />
-      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      {loading ? <ActivityIndicator style={styles.loadingIndicator} /> : null}
-      <Button
-        title="Entrar"
-        color={'#40e0d0'}
-        onPress={handleLogin}
-        disabled={loading}
-      />
-    </View>
+      {passwordError ? (
+        <styles.ErrorCaption>{passwordError}</styles.ErrorCaption>
+      ) : null}
+      {loading ? <styles.LoadingIndicator /> : null}
+      <styles.Button onPress={handleLogin} disabled={loading}>
+        <styles.ButtonText>Entrar</styles.ButtonText>
+      </styles.Button>
+    </styles.Container>
   );
 };

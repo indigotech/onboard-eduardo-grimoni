@@ -1,13 +1,6 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import {styles} from './styles';
+import {Alert} from 'react-native';
+import * as styles from './styles';
 import {
   validateEmail,
   validatePassword,
@@ -15,9 +8,9 @@ import {
   validatePhone,
   validateBirthdate,
 } from './validations';
-import {CREATE_USER_MUTATION} from './queries';
 import {client} from './client';
 import {useMutation} from '@apollo/client';
+import {CREATE_USER_MUTATION} from './queries';
 import {Navigation} from 'react-native-navigation';
 
 export const CreateUser = (props: {componentId: string}) => {
@@ -35,6 +28,7 @@ export const CreateUser = (props: {componentId: string}) => {
     CREATE_USER_MUTATION,
     {client: client},
   );
+
   const navigateToUser = () => {
     Navigation.push(props.componentId, {
       component: {
@@ -93,8 +87,6 @@ export const CreateUser = (props: {componentId: string}) => {
           },
         },
       });
-
-      Alert.alert('Sucesso', 'Usuário criado com sucesso.');
       navigateToUser();
     } catch (error) {
       Alert.alert('Erro', 'Ocorreu um erro ao criar o usuário.');
@@ -102,55 +94,56 @@ export const CreateUser = (props: {componentId: string}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Criar Usuário</Text>
-      <TextInput
-        style={[styles.input, nameError ? styles.inputError : null]}
+    <styles.Container>
+      <styles.H1>Criar Usuário</styles.H1>
+      <styles.TextField
         placeholder="Nome"
         value={name}
         onChangeText={text => setName(text)}
       />
-      {nameError ? <Text style={styles.error}>{nameError}</Text> : null}
-      <TextInput
-        style={[styles.input, emailError ? styles.inputError : null]}
+      {nameError ? (
+        <styles.ErrorCaption>{nameError}</styles.ErrorCaption>
+      ) : null}
+      <styles.TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={text => setEmail(text)}
       />
-      {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
-      <TextInput
-        style={[styles.input, passwordError ? styles.inputError : null]}
+      {emailError ? (
+        <styles.ErrorCaption>{emailError}</styles.ErrorCaption>
+      ) : null}
+      <styles.TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
       />
-      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      <TextInput
-        style={[styles.input, phoneError ? styles.inputError : null]}
+      {passwordError ? (
+        <styles.ErrorCaption>{passwordError}</styles.ErrorCaption>
+      ) : null}
+      <styles.TextField
         placeholder="Telefone"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={text => setPhone(text)}
       />
-      {phoneError ? <Text style={styles.error}>{phoneError}</Text> : null}
-      <TextInput
-        style={[styles.input, birthDateError ? styles.inputError : null]}
+      {phoneError ? (
+        <styles.ErrorCaption>{phoneError}</styles.ErrorCaption>
+      ) : null}
+      <styles.TextField
         placeholder="Data de Nascimento (DD/MM/AAAA)"
         value={birthDate}
         onChangeText={text => setBirthDate(text)}
       />
       {birthDateError ? (
-        <Text style={styles.error}>{birthDateError}</Text>
+        <styles.ErrorCaption>{birthDateError}</styles.ErrorCaption>
       ) : null}
-      <Button
-        title="Criar Usuário"
-        onPress={handleAddUser}
-        disabled={mutationLoading}
-      />
-      {mutationLoading && <ActivityIndicator style={styles.loadingIndicator} />}
-    </View>
+      <styles.Button onPress={handleAddUser}>
+        <styles.ButtonText>Criar Usuário</styles.ButtonText>
+      </styles.Button>
+      {mutationLoading && <styles.LoadingIndicator />}
+    </styles.Container>
   );
 };

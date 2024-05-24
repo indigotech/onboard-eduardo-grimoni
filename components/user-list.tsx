@@ -1,13 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import {FlatList, TouchableOpacity} from 'react-native';
 import {useQuery} from '@apollo/client';
-import {styles} from './styles';
+import * as styles from './styles';
 import {GET_USERS} from './queries';
 import {Navigation} from 'react-native-navigation';
 
@@ -81,20 +75,20 @@ export const UserList = (props: {componentId: string}) => {
 
   const renderItem = ({item}: {item: User}) => (
     <TouchableOpacity onPress={() => navigateToUserDetails(item.id)}>
-      <View style={styles.userContainer}>
-        <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.userEmail}>{item.email}</Text>
-      </View>
+      <styles.UserContainer>
+        <styles.UserName>{item.name}</styles.UserName>
+        <styles.UserEmail>{item.email}</styles.UserEmail>
+      </styles.UserContainer>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Lista de Usuários</Text>
+    <styles.Container>
+      <styles.H1>Lista de Usuários</styles.H1>
       {loading && offset === 0 ? (
-        <ActivityIndicator style={styles.loadingIndicator} />
+        <styles.LoadingIndicator />
       ) : error ? (
-        <Text style={styles.error}>Error: {error.message}</Text>
+        <styles.ErrorCaption>Error: {error.message}</styles.ErrorCaption>
       ) : (
         <FlatList
           data={data?.users.nodes}
@@ -104,13 +98,11 @@ export const UserList = (props: {componentId: string}) => {
           onEndReached={loadMoreData}
         />
       )}
-      <View style={styles.bottomRightContainer}>
-        <TouchableOpacity
-          style={styles.roundButton}
-          onPress={navigateToCreateUser}>
-          <Text style={styles.plusSign}>+</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <styles.BottomRightContainer>
+        <styles.RoundButton onPress={navigateToCreateUser}>
+          <styles.PlusSign>+</styles.PlusSign>
+        </styles.RoundButton>
+      </styles.BottomRightContainer>
+    </styles.Container>
   );
 };
