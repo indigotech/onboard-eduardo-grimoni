@@ -5,6 +5,7 @@ import {UserList} from './components/user-list.tsx';
 import {ApolloProvider} from '@apollo/client';
 import {client} from './components/client.ts';
 import {CreateUser} from './components/create-user.tsx';
+import {UserDetails} from './components/user-details.tsx';
 
 Navigation.registerComponent('Login', () => props => (
   <ApolloProvider client={client}>
@@ -19,6 +20,11 @@ Navigation.registerComponent('User', () => props => (
 Navigation.registerComponent('Create', () => props => (
   <ApolloProvider client={client}>
     <CreateUser componentId={props.componentId} />
+  </ApolloProvider>
+));
+Navigation.registerComponent('Details', () => props => (
+  <ApolloProvider client={client}>
+    <UserDetails userId={props.userId} />
   </ApolloProvider>
 ));
 

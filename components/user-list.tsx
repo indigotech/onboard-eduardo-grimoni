@@ -36,6 +36,17 @@ export const UserList = (props: {componentId: string}) => {
     });
   };
 
+  const navigateToUserDetails = (userId: number) => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'Details',
+        passProps: {
+          userId: userId,
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (!loading && data && data.users.pageInfo.hasNextPage) {
       const newOffset = data.users.nodes.length;
@@ -69,10 +80,12 @@ export const UserList = (props: {componentId: string}) => {
   };
 
   const renderItem = ({item}: {item: User}) => (
-    <View style={styles.userContainer}>
-      <Text style={styles.userName}>{item.name}</Text>
-      <Text style={styles.userEmail}>{item.email}</Text>
-    </View>
+    <TouchableOpacity onPress={() => navigateToUserDetails(item.id)}>
+      <View style={styles.userContainer}>
+        <Text style={styles.userName}>{item.name}</Text>
+        <Text style={styles.userEmail}>{item.email}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
