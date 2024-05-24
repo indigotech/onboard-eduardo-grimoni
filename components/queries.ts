@@ -26,3 +26,29 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+export const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($data: UserInput!) {
+    createUser(data: $data) {
+      id
+      name
+      phone
+      birthDate
+      email
+      role
+    }
+  }
+`;
+
+export const GET_DETAILS = gql`
+  query User($userId: ID) {
+    user(id: $userId) {
+      id
+      name
+      phone
+      birthDate
+      email
+      role
+    }
+  }
+`;
