@@ -21,6 +21,10 @@ export function UserDetails(props: {userId: any}) {
 
   const user = data.user;
 
+  const formattedBirthDate = `${user.birthDate.split('-')[2]}/${
+    user.birthDate.split('-')[1]
+  }/${user.birthDate.split('-')[0]}`;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>User Details</Text>
@@ -38,7 +42,7 @@ export function UserDetails(props: {userId: any}) {
       </View>
       <View style={localStyles.userDetailsContainer}>
         <Text style={localStyles.detailLabel}>Birth Date:</Text>
-        <Text style={localStyles.detailValue}>{user.birthDate}</Text>
+        <Text style={localStyles.detailValue}>{formattedBirthDate}</Text>
       </View>
       <View style={localStyles.userDetailsContainer}>
         <Text style={localStyles.detailLabel}>Email:</Text>
