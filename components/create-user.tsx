@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-native';
-import * as styles from './styles';
 import {
   validateEmail,
   validatePassword,
@@ -12,6 +11,14 @@ import {client} from './client';
 import {useMutation} from '@apollo/client';
 import {CREATE_USER_MUTATION} from './queries';
 import {Navigation} from 'react-native-navigation';
+import {
+  Container,
+  H1,
+  ButtonText,
+  LoadingIndicator,
+  ButtonStyles,
+} from './styles';
+import {TextField} from './text-field';
 
 export const CreateUser = (props: {componentId: string}) => {
   const [name, setName] = useState('');
@@ -74,6 +81,7 @@ export const CreateUser = (props: {componentId: string}) => {
     ) {
       return;
     }
+
     try {
       await createUser({
         variables: {
@@ -94,56 +102,46 @@ export const CreateUser = (props: {componentId: string}) => {
   };
 
   return (
-    <styles.Container>
-      <styles.H1>Criar Usuário</styles.H1>
-      <styles.TextField
+    <Container>
+      <H1>Criar Usuário</H1>
+      <TextField
         placeholder="Nome"
         value={name}
         onChangeText={text => setName(text)}
+        error={nameError}
       />
-      {nameError ? (
-        <styles.ErrorCaption>{nameError}</styles.ErrorCaption>
-      ) : null}
-      <styles.TextField
+      <TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={text => setEmail(text)}
+        error={emailError}
       />
-      {emailError ? (
-        <styles.ErrorCaption>{emailError}</styles.ErrorCaption>
-      ) : null}
-      <styles.TextField
+      <TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
+        error={passwordError}
       />
-      {passwordError ? (
-        <styles.ErrorCaption>{passwordError}</styles.ErrorCaption>
-      ) : null}
-      <styles.TextField
+      <TextField
         placeholder="Telefone"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={text => setPhone(text)}
+        error={phoneError}
       />
-      {phoneError ? (
-        <styles.ErrorCaption>{phoneError}</styles.ErrorCaption>
-      ) : null}
-      <styles.TextField
+      <TextField
         placeholder="Data de Nascimento (DD/MM/AAAA)"
         value={birthDate}
         onChangeText={text => setBirthDate(text)}
+        error={birthDateError}
       />
-      {birthDateError ? (
-        <styles.ErrorCaption>{birthDateError}</styles.ErrorCaption>
-      ) : null}
-      <styles.Button onPress={handleAddUser} disabled={mutationLoading}>
-        <styles.ButtonText>Criar Usuário</styles.ButtonText>
-      </styles.Button>
-      {mutationLoading && <styles.LoadingIndicator />}
-    </styles.Container>
+      <ButtonStyles onPress={handleAddUser} disabled={mutationLoading}>
+        <ButtonText>Criar Usuário</ButtonText>
+      </ButtonStyles>
+      {mutationLoading && <LoadingIndicator />}
+    </Container>
   );
 };

@@ -1,9 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import {useQuery} from '@apollo/client';
-import * as styles from './styles';
 import {GET_USERS} from './queries';
 import {Navigation} from 'react-native-navigation';
+import {
+  UserContainer,
+  UserName,
+  UserEmail,
+  Container,
+  H1,
+  LoadingIndicator,
+  ErrorCaption,
+  BottomRightContainer,
+  RoundButton,
+  PlusSign,
+} from './styles';
 
 interface User {
   id: number;
@@ -75,20 +86,20 @@ export const UserList = (props: {componentId: string}) => {
 
   const renderItem = ({item}: {item: User}) => (
     <TouchableOpacity onPress={() => navigateToUserDetails(item.id)}>
-      <styles.UserContainer>
-        <styles.UserName>{item.name}</styles.UserName>
-        <styles.UserEmail>{item.email}</styles.UserEmail>
-      </styles.UserContainer>
+      <UserContainer>
+        <UserName>{item.name}</UserName>
+        <UserEmail>{item.email}</UserEmail>
+      </UserContainer>
     </TouchableOpacity>
   );
 
   return (
-    <styles.Container>
-      <styles.H1>Lista de Usuários</styles.H1>
+    <Container>
+      <H1>Lista de Usuários</H1>
       {loading && offset === 0 ? (
-        <styles.LoadingIndicator />
+        <LoadingIndicator />
       ) : error ? (
-        <styles.ErrorCaption>Error: {error.message}</styles.ErrorCaption>
+        <ErrorCaption>Error: {error.message}</ErrorCaption>
       ) : (
         <FlatList
           data={data?.users.nodes}
@@ -98,11 +109,11 @@ export const UserList = (props: {componentId: string}) => {
           onEndReached={loadMoreData}
         />
       )}
-      <styles.BottomRightContainer>
-        <styles.RoundButton onPress={navigateToCreateUser}>
-          <styles.PlusSign>+</styles.PlusSign>
-        </styles.RoundButton>
-      </styles.BottomRightContainer>
-    </styles.Container>
+      <BottomRightContainer>
+        <RoundButton onPress={navigateToCreateUser}>
+          <PlusSign>+</PlusSign>
+        </RoundButton>
+      </BottomRightContainer>
+    </Container>
   );
 };

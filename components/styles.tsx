@@ -55,11 +55,14 @@ export const H1 = styled.Text`
   margin-bottom: 20px;
 `;
 
-export const Button = styled.TouchableOpacity`
+export const ButtonStyles = styled.TouchableOpacity`
   height: 44px;
+  width: 100%;
   background-color: #40e0d0;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
+  margin-top: 20px;
 `;
 
 export const ButtonText = styled.Text`
@@ -75,13 +78,13 @@ export const FormLabel = styled.Text`
   margin-bottom: 12px;
 `;
 
-export const TextField = styled.TextInput`
+export const StyledTextInput = styled.TextInput<{error?: boolean}>`
   height: 40px;
+  width: 100%;
   border-width: 1px;
-  border-color: #777777;
+  border-color: ${({error}) => (error ? 'red' : '#777777')};
   border-radius: 5px;
-  padding-horizontal: 10px;
-  margin-bottom: 8px;
+  padding-horizontal: 16px;
 `;
 
 export const ErrorCaption = styled.Text`

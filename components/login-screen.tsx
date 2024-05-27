@@ -3,10 +3,17 @@ import {Alert} from 'react-native';
 import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import * as styles from './styles';
 import {client} from './client';
 import {LOGIN_MUTATION} from './queries';
 import {validateEmail, validatePassword} from './validations';
+import {
+  Container,
+  H1,
+  ButtonText,
+  LoadingIndicator,
+  ButtonStyles,
+} from './styles';
+import {TextField} from './text-field';
 
 export const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
@@ -70,31 +77,27 @@ export const LoginScreen = (props: {componentId: string}) => {
   };
 
   return (
-    <styles.Container>
-      <styles.H1>Bem-vindo(a) à Taqtile!</styles.H1>
-      <styles.TextField
+    <Container>
+      <H1>Bem-vindo(a) à Taqtile!</H1>
+      <TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={text => setEmail(text)}
+        onChangeText={(text: React.SetStateAction<string>) => setEmail(text)}
+        error={emailError}
       />
-      {emailError ? (
-        <styles.ErrorCaption>{emailError}</styles.ErrorCaption>
-      ) : null}
-      <styles.TextField
+      <TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
-        onChangeText={text => setPassword(text)}
+        onChangeText={(text: React.SetStateAction<string>) => setPassword(text)}
+        error={passwordError}
       />
-      {passwordError ? (
-        <styles.ErrorCaption>{passwordError}</styles.ErrorCaption>
-      ) : null}
-      {loading ? <styles.LoadingIndicator /> : null}
-      <styles.Button onPress={handleLogin} disabled={loading}>
-        <styles.ButtonText>Entrar</styles.ButtonText>
-      </styles.Button>
-    </styles.Container>
+      {loading ? <LoadingIndicator /> : null}
+      <ButtonStyles onPress={handleLogin} disabled={loading}>
+        <ButtonText>Entrar</ButtonText>
+      </ButtonStyles>
+    </Container>
   );
 };
