@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import {FlatList, TouchableOpacity} from 'react-native';
 import {useQuery} from '@apollo/client';
-import {styles} from './styles';
 import {GET_USERS} from './queries';
 import {Navigation} from 'react-native-navigation';
+import {
+  UserContainer,
+  UserName,
+  UserEmail,
+  Container,
+  H1,
+  LoadingIndicator,
+  ErrorCaption,
+  BottomRightContainer,
+  RoundButton,
+  PlusSign,
+} from './styles';
 
 interface User {
   id: number;
@@ -81,20 +86,20 @@ export const UserList = (props: {componentId: string}) => {
 
   const renderItem = ({item}: {item: User}) => (
     <TouchableOpacity onPress={() => navigateToUserDetails(item.id)}>
-      <View style={styles.userContainer}>
-        <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.userEmail}>{item.email}</Text>
-      </View>
+      <UserContainer>
+        <UserName>{item.name}</UserName>
+        <UserEmail>{item.email}</UserEmail>
+      </UserContainer>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Lista de Usuários</Text>
+    <Container>
+      <H1>Lista de Usuários</H1>
       {loading && offset === 0 ? (
-        <ActivityIndicator style={styles.loadingIndicator} />
+        <LoadingIndicator />
       ) : error ? (
-        <Text style={styles.error}>Error: {error.message}</Text>
+        <ErrorCaption>Error: {error.message}</ErrorCaption>
       ) : (
         <FlatList
           data={data?.users.nodes}
@@ -104,13 +109,11 @@ export const UserList = (props: {componentId: string}) => {
           onEndReached={loadMoreData}
         />
       )}
-      <View style={styles.bottomRightContainer}>
-        <TouchableOpacity
-          style={styles.roundButton}
-          onPress={navigateToCreateUser}>
-          <Text style={styles.plusSign}>+</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <BottomRightContainer>
+        <RoundButton onPress={navigateToCreateUser}>
+          <PlusSign>+</PlusSign>
+        </RoundButton>
+      </BottomRightContainer>
+    </Container>
   );
 };

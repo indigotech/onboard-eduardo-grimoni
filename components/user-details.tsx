@@ -1,8 +1,14 @@
 import React from 'react';
 import {useQuery} from '@apollo/client';
 import {GET_DETAILS} from './queries';
-import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import {styles} from './styles';
+import {
+  LoadingIndicator,
+  ErrorCaption,
+  Container,
+  H1,
+  UserContainer,
+  UserName,
+} from './styles';
 
 export function UserDetails(props: {userId: any}) {
   const {userId} = props;
@@ -12,11 +18,12 @@ export function UserDetails(props: {userId: any}) {
       userId: userId,
     },
   });
+
   if (loading) {
-    return <ActivityIndicator style={localStyles.loadingIndicator} />;
+    return <LoadingIndicator />;
   }
   if (error) {
-    return <Text style={styles.error}>Error: {error.message}</Text>;
+    return <ErrorCaption>Error: {error.message}</ErrorCaption>;
   }
 
   const user = data.user;
@@ -26,51 +33,26 @@ export function UserDetails(props: {userId: any}) {
   }/${user.birthDate.split('-')[0]}`;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>User Details</Text>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>ID:</Text>
-        <Text style={localStyles.detailValue}>{user.id}</Text>
-      </View>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>Name:</Text>
-        <Text style={localStyles.detailValue}>{user.name}</Text>
-      </View>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>Phone:</Text>
-        <Text style={localStyles.detailValue}>{user.phone}</Text>
-      </View>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>Birth Date:</Text>
-        <Text style={localStyles.detailValue}>{formattedBirthDate}</Text>
-      </View>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>Email:</Text>
-        <Text style={localStyles.detailValue}>{user.email}</Text>
-      </View>
-      <View style={localStyles.userDetailsContainer}>
-        <Text style={localStyles.detailLabel}>Role:</Text>
-        <Text style={localStyles.detailValue}>{user.role}</Text>
-      </View>
-    </View>
+    <Container>
+      <H1>User Details</H1>
+      <UserContainer>
+        <UserName>ID: {user.id}</UserName>
+      </UserContainer>
+      <UserContainer>
+        <UserName>Name: {user.name}</UserName>
+      </UserContainer>
+      <UserContainer>
+        <UserName>Phone: {user.phone}</UserName>
+      </UserContainer>
+      <UserContainer>
+        <UserName>Birth Date: {formattedBirthDate}</UserName>
+      </UserContainer>
+      <UserContainer>
+        <UserName>Email: {user.email}</UserName>
+      </UserContainer>
+      <UserContainer>
+        <UserName>Role: {user.role}</UserName>
+      </UserContainer>
+    </Container>
   );
 }
-
-const localStyles = StyleSheet.create({
-  userDetailsContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  detailLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  detailValue: {
-    fontSize: 16,
-  },
-  loadingIndicator: {
-    marginTop: 20,
-    color: '#0000ff',
-  },
-});

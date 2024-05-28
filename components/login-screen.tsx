@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {Alert} from 'react-native';
 import {useMutation} from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import {styles} from './styles';
 import {client} from './client';
 import {LOGIN_MUTATION} from './queries';
 import {validateEmail, validatePassword} from './validations';
+import {
+  Container,
+  H1,
+  ButtonText,
+  LoadingIndicator,
+  ButtonStyles,
+} from './styles';
+import {TextField} from './text-field';
 
 export const LoginScreen = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
@@ -67,7 +67,6 @@ export const LoginScreen = (props: {componentId: string}) => {
           Alert.alert('Error', errorMessage);
         } else {
           await AsyncStorage.setItem('token', data.login.token);
-          Alert.alert('Sucesso', 'Login realizado com sucesso!');
           navigateToUser();
         }
       } catch (error) {
@@ -78,32 +77,27 @@ export const LoginScreen = (props: {componentId: string}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo(a) à Taqtile!</Text>
-      <TextInput
-        style={[styles.input, emailError ? styles.inputError : null]}
+    <Container>
+      <H1>Bem-vindo(a) à Taqtile!</H1>
+      <TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={text => setEmail(text)}
+        onChangeText={(text: React.SetStateAction<string>) => setEmail(text)}
+        error={emailError}
       />
-      {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
-      <TextInput
-        style={[styles.input, passwordError ? styles.inputError : null]}
+      <TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
-        onChangeText={text => setPassword(text)}
+        onChangeText={(text: React.SetStateAction<string>) => setPassword(text)}
+        error={passwordError}
       />
-      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      {loading ? <ActivityIndicator style={styles.loadingIndicator} /> : null}
-      <Button
-        title="Entrar"
-        color={'#40e0d0'}
-        onPress={handleLogin}
-        disabled={loading}
-      />
-    </View>
+      {loading ? <LoadingIndicator /> : null}
+      <ButtonStyles onPress={handleLogin} disabled={loading}>
+        <ButtonText>Entrar</ButtonText>
+      </ButtonStyles>
+    </Container>
   );
 };

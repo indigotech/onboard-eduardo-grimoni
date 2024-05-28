@@ -1,13 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import {styles} from './styles';
+import {Alert} from 'react-native';
 import {
   validateEmail,
   validatePassword,
@@ -15,10 +7,18 @@ import {
   validatePhone,
   validateBirthdate,
 } from './validations';
-import {CREATE_USER_MUTATION} from './queries';
 import {client} from './client';
 import {useMutation} from '@apollo/client';
+import {CREATE_USER_MUTATION} from './queries';
 import {Navigation} from 'react-native-navigation';
+import {
+  Container,
+  H1,
+  ButtonText,
+  LoadingIndicator,
+  ButtonStyles,
+} from './styles';
+import {TextField} from './text-field';
 
 export const CreateUser = (props: {componentId: string}) => {
   const [name, setName] = useState('');
@@ -35,6 +35,7 @@ export const CreateUser = (props: {componentId: string}) => {
     CREATE_USER_MUTATION,
     {client: client},
   );
+
   const navigateToUser = () => {
     Navigation.push(props.componentId, {
       component: {
@@ -80,6 +81,7 @@ export const CreateUser = (props: {componentId: string}) => {
     ) {
       return;
     }
+
     try {
       await createUser({
         variables: {
@@ -93,8 +95,6 @@ export const CreateUser = (props: {componentId: string}) => {
           },
         },
       });
-
-      Alert.alert('Sucesso', 'Usuário criado com sucesso.');
       navigateToUser();
     } catch (error) {
       Alert.alert('Erro', 'Ocorreu um erro ao criar o usuário.');
@@ -102,55 +102,46 @@ export const CreateUser = (props: {componentId: string}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Criar Usuário</Text>
-      <TextInput
-        style={[styles.input, nameError ? styles.inputError : null]}
+    <Container>
+      <H1>Criar Usuário</H1>
+      <TextField
         placeholder="Nome"
         value={name}
         onChangeText={text => setName(text)}
+        error={nameError}
       />
-      {nameError ? <Text style={styles.error}>{nameError}</Text> : null}
-      <TextInput
-        style={[styles.input, emailError ? styles.inputError : null]}
+      <TextField
         placeholder="E-mail"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={text => setEmail(text)}
+        error={emailError}
       />
-      {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
-      <TextInput
-        style={[styles.input, passwordError ? styles.inputError : null]}
+      <TextField
         placeholder="Senha"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
+        error={passwordError}
       />
-      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      <TextInput
-        style={[styles.input, phoneError ? styles.inputError : null]}
+      <TextField
         placeholder="Telefone"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={text => setPhone(text)}
+        error={phoneError}
       />
-      {phoneError ? <Text style={styles.error}>{phoneError}</Text> : null}
-      <TextInput
-        style={[styles.input, birthDateError ? styles.inputError : null]}
+      <TextField
         placeholder="Data de Nascimento (DD/MM/AAAA)"
         value={birthDate}
         onChangeText={text => setBirthDate(text)}
+        error={birthDateError}
       />
-      {birthDateError ? (
-        <Text style={styles.error}>{birthDateError}</Text>
-      ) : null}
-      <Button
-        title="Criar Usuário"
-        onPress={handleAddUser}
-        disabled={mutationLoading}
-      />
-      {mutationLoading && <ActivityIndicator style={styles.loadingIndicator} />}
-    </View>
+      <ButtonStyles onPress={handleAddUser} disabled={mutationLoading}>
+        <ButtonText>Criar Usuário</ButtonText>
+      </ButtonStyles>
+      {mutationLoading && <LoadingIndicator />}
+    </Container>
   );
 };
